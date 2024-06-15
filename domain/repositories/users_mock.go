@@ -30,24 +30,17 @@ func NewUsersRepository(db *MongoDB) IUsersRepository {
 }
 
 func (repo usersRepository) FindAll() ([]entities.UserDataFormat, error) {
-	options := options.Find()
-	filter := bson.M{}
-	cursor, err := repo.Collection.Find(repo.Context, filter, options)
+	cursor, err := repo.Collection.Find(repo.Context, bson.M{}, options.Find())
 	if err != nil {
 		fiberlog.Errorf("Users -> FindAll: %s \n", err)
 		return nil, err
 	}
 	defer cursor.Close(repo.Context)
-	pack := make([]entities.UserDataFormat, 0)
-	for cursor.Next(repo.Context) {
-		var item entities.UserDataFormat
 
-		err := cursor.Decode(&item)
-		if err != nil {
-			continue
-		}
-
-		pack = append(pack, item)
+	var users []entities.UserDataFormat
+	if err := cursor.All(repo.Context, &users); err != nil {
+		fiberlog.Errorf("Users -> FindAll: %s \n", err)
+		return nil, err
 	}
-	return pack, nil
+	return users, nil
 }

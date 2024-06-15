@@ -7,7 +7,7 @@ import (
 	"go-mongo-redis/domain/entities"
 	"log"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 type redisConnectionRepository struct {
@@ -30,7 +30,7 @@ func NewRedisRepository(redis *datasources.RedisConnection) IRedisConnectionRepo
 }
 
 func (repo redisConnectionRepository) GetRedisData() []entities.UserDataFormat {
-	dataSpeakerRedis, err := repo.RedisRead.Get(repo.RedisRead.Context(), "UsersMock").Result()
+	dataSpeakerRedis, err := repo.RedisRead.Get(repo.Context, "UsersMock").Result()
 	if err != nil {
 		log.Println("error GetUsersData ", err.Error())
 		return nil
@@ -42,7 +42,7 @@ func (repo redisConnectionRepository) GetRedisData() []entities.UserDataFormat {
 }
 
 func (repo redisConnectionRepository) SetRedisData(dataByte []byte) bool {
-	err := repo.RedisWR.Set(repo.RedisWR.Context(), "UsersMock", dataByte, 0).Err()
+	err := repo.RedisWR.Set(repo.Context, "UsersMock", dataByte, 0).Err()
 	if err != nil {
 		log.Println("error SetUsersName ", err.Error())
 		return false

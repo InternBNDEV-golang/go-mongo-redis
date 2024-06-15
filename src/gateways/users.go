@@ -24,9 +24,9 @@ func (h HTTPGateway) GetAllUserDataRedis(ctx *fiber.Ctx) error {
 }
 
 func (h HTTPGateway) SetAllUserDataRedis(ctx *fiber.Ctx) error {
-	data, err := h.UserService.SetAllUserRedis()
+	_, err := h.UserService.SetAllUserRedis()
 	if err != nil {
 		return ctx.Status(fiber.StatusForbidden).JSON(entities.ResponseModel{Message: "cannot set all users data"})
 	}
-	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success", Data: data})
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "set redis success"})
 }
